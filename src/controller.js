@@ -1,9 +1,9 @@
 const Bet = require('./models/Bet');
-const currentDate = require('./middlewares/currentDate');
-const compareDate = require('./middlewares/compareDate');
-const findCorrectNumbers = require('./middlewares/findCorrectNumbers');
-const distributePrize = require('./middlewares/distributePrize');
-const generateResult = require('./middlewares/generateResult');
+const currentDate = require('../functions/currentDate');
+const compareDate = require('../functions/compareDate');
+const findCorrectNumbers = require('../functions/findCorrectNumbers');
+const distributePrize = require('../functions/distributePrize');
+const generateResult = require('../functions/generateResult');
 
 module.exports = {
   getWinners: async (req, res, next) => {
