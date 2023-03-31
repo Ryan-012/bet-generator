@@ -1,17 +1,19 @@
 const Bet = require('./models/Bet');
-const currentDate = require('../functions/currentDate');
-const compareDate = require('../functions/compareDate');
-const findCorrectNumbers = require('../functions/findCorrectNumbers');
-const distributePrize = require('../functions/distributePrize');
-const generateResult = require('../functions/generateResult');
+const compareDate = require('./functions/compareDate');
+const findCorrectNumbers = require('./functions/findCorrectNumbers');
+const distributePrize = require('./functions/distributePrize');
+const currentDate = require('./functions/currentDate');
 
 module.exports = {
   getWinners: async (req, res, next) => {
     const winners = [];
-    const result = generateResult();
+    const result = req.result;
     const bets = await Bet.find();
 
-    if (bets.length === 0) return res.status(400).json({ message: 'No bets!' });
+    if (bets.length === 0)
+      return res.status(400).json({
+        message: 'No bets!',
+      });
 
     for (let i = 0; bets.length > i; i++) {
       const { date, bet } = bets[i];
@@ -22,15 +24,20 @@ module.exports = {
 
         if (correctNumbers.length >= 4) {
           const { _doc } = bets[i];
-          winners.push({ ..._doc, correctNumbers });
+          winners.push({
+            ..._doc,
+            correctNumbers,
+          });
         }
       }
     }
 
-    if (winners.length === 0) return res.status(400).json({ message: 'No winners!' });
+    if (winners.length === 0)
+      return res.status(400).json({
+        message: 'No winners!',
+      });
 
     req.winners = winners;
-    req.result = result;
     return next();
   },
   saveBet: async (req, res) => {
@@ -38,11 +45,18 @@ module.exports = {
 
     const price = (bet.length - 5) * 4.5;
 
-    const newBet = new Bet({ name, bet, price, date: currentDate() });
+    const newBet = new Bet({
+      name,
+      bet,
+      price,
+      date: currentDate(),
+    });
 
     try {
       const doc = await newBet.save();
-      res.status(201).json({ doc });
+      res.status(201).json({
+        doc,
+      });
     } catch (error) {
       res.status(400).send(error);
     }
@@ -54,28 +68,42 @@ module.exports = {
 
     try {
       const finalWinners = await distributePrize(winners, prize);
-      res.json({ finalWinners, result: req.result });
+      res.json({
+        finalWinners,
+        result: req.result,
+      });
     } catch (error) {
-      res.status(400).json({ error });
+      res.status(400).json({
+        error,
+      });
     }
   },
 
   cleanBets: async (_req, res) => {
     Bet.deleteMany()
       .then((response) => {
-        return res.json({ response, message: 'All bets successfully deleted!' });
+        return res.json({
+          response,
+          message: 'All bets successfully deleted!',
+        });
       })
       .catch((error) => {
-        return res.status(400).json({ error });
+        return res.status(400).json({
+          error,
+        });
       });
   },
   allBet: async (_req, res) => {
     try {
       const bets = await Bet.find();
 
-      res.json({ bets });
+      res.json({
+        bets,
+      });
     } catch (error) {
-      res.status(400).json({ error });
+      res.status(400).json({
+        error,
+      });
     }
   },
 };
