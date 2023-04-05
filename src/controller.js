@@ -3,11 +3,12 @@ const compareDate = require('./functions/compareDate');
 const findCorrectNumbers = require('./functions/findCorrectNumbers');
 const distributePrize = require('./functions/distributePrize');
 const currentDate = require('./functions/currentDate');
+const generateResult = require('./functions/generateResult');
 
 module.exports = {
   getWinners: async (req, res, next) => {
     const winners = [];
-    const result = req.result;
+    const result = generateResult();
     const bets = await Bet.find();
 
     if (bets.length === 0)
@@ -38,6 +39,7 @@ module.exports = {
       });
 
     req.winners = winners;
+    req.result = result;
     return next();
   },
   saveBet: async (req, res) => {

@@ -1,4 +1,4 @@
-module.exports = function generateResult(req, _res, next) {
+module.exports = function generateResult() {
   const result = [];
 
   while (result.length < 6) {
@@ -11,7 +11,5 @@ module.exports = function generateResult(req, _res, next) {
     }
   }
 
-  req.result = result;
-
-  return next();
+  return result;
 };
